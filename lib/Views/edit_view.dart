@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:to_do/models/todo_model.dart';
 import 'package:to_do/utils/colors.dart';
 
-import 'page1.dart';
+class EditView extends StatefulWidget {
+  final Function(Todo) editTodo;
+  final Todo todoToEdit;
 
-class Page2 extends StatefulWidget {
-  final Function(Todo) saveTodo;
-
-  const Page2({@required this.saveTodo});
+  const EditView({
+    @required this.editTodo,
+    @required this.todoToEdit,
+  });
   @override
   _Page2State createState() => _Page2State();
 }
 
-class _Page2State extends State<Page2> {
+class _Page2State extends State<EditView> {
   final TextEditingController titleController = TextEditingController();
 
   final TextEditingController bodyController = TextEditingController();
@@ -22,12 +24,20 @@ class _Page2State extends State<Page2> {
   bool categories = true;
 
   @override
+  void initState() {
+    titleController.text = widget.todoToEdit.title;
+    bodyController.text = widget.todoToEdit.body;
+    choice = widget.todoToEdit.category;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black45,
       appBar: AppBar(
         title: Text(
-          "Create task",
+          "Edit task",
           style: TextStyle(
               color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
         ),
@@ -203,7 +213,7 @@ class _Page2State extends State<Page2> {
                     ngo();
                   },
                   child: Text(
-                    "SAVE",
+                    "EDIT",
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 )
@@ -220,13 +230,15 @@ class _Page2State extends State<Page2> {
       // formKey.currentState.save();
       print("here");
       print("form key");
+
       Todo todo = Todo(
+        id: widget.todoToEdit.id,
         title: titleController.text,
         category: choice,
         body: bodyController.text,
         date: DateTime.now(),
       );
-      widget.saveTodo(todo);
+      widget.editTodo(todo);
       Navigator.pop(context);
     }
   }
